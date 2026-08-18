@@ -127,6 +127,6 @@ export const references = [
     title: "Kulturzentrum Kreuzberg",
     category: "Öffentlicher Bau",
     year: "2023",
-    image: "https://images.unsplash.com/photo-1555443805-658637491dd4?w=800&h=600&fit=crop",
+    image: "/images/Kreuzberg Cultural Center.webp",
   },
 ];
