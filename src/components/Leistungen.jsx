@@ -14,13 +14,13 @@ function ServiceItem({ service, isOpen, onToggle, index }) {
     >
       <button
         onClick={onToggle}
-        className="w-full py-5 sm:py-6 flex items-center justify-between text-left group min-h-[44px]"
+        className="w-full py-5 sm:py-6 flex items-center justify-between text-left group min-h-11"
         aria-expanded={isOpen}
       >
         <span className="text-base sm:text-lg md:text-xl font-light text-foreground group-hover:text-foreground-muted transition-colors">
           {service.title}
         </span>
-        <span className="ml-4 flex-shrink-0 w-8 h-8 flex items-center justify-center border border-border-subtle rounded-full group-hover:border-foreground transition-colors">
+        <span className="ml-4 shrink-0 w-8 h-8 flex items-center justify-center border border-border-subtle rounded-full group-hover:border-foreground transition-colors">
           {isOpen ? <Minus size={16} /> : <Plus size={16} />}
         </span>
       </button>
@@ -64,7 +64,7 @@ export default function Leistungen() {
               <img
                 src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&h=1000&fit=crop&q=80"
                 alt="Architekten bei der Planung"
-                className="w-full aspect-[4/5] object-cover"
+                className="w-full aspect-4/5 object-cover"
                 loading="lazy"
                 decoding="async"
               />
