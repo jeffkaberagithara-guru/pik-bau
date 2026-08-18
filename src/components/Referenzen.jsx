@@ -10,17 +10,18 @@ function ReferenceCard({ reference, index }) {
       transition={{ duration: 0.6, delay: index * 0.1 }}
       className="group cursor-pointer"
     >
-      <div className="overflow-hidden mb-4">
+      <div className="overflow-hidden mb-3 sm:mb-4">
         <img
           src={reference.image}
           alt={`${reference.title} — ${reference.category}`}
           className="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-105"
           loading="lazy"
+          decoding="async"
         />
       </div>
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-start justify-between gap-3 sm:gap-4">
         <div>
-          <h3 className="text-lg font-light text-foreground mb-1">
+          <h3 className="text-base sm:text-lg font-light text-foreground mb-1">
             {reference.title}
           </h3>
           <p className="label">{reference.category}</p>
@@ -40,13 +41,13 @@ export default function Referenzen() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
-          className="mb-12 md:mb-16"
+          className="mb-10 sm:mb-12 md:mb-16"
         >
-          <span className="label block mb-4">Referenzen</span>
+          <span className="label block mb-3 sm:mb-4">Referenzen</span>
           <h2 className="heading-lg">Ausgewählte Projekte</h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
           {references.map((reference, index) => (
             <ReferenceCard key={reference.id} reference={reference} index={index} />
           ))}
