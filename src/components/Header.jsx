@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import logo from "/Logo2.png";
@@ -9,21 +9,37 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 50);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleNavClick = (e, href) => {
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [isMobileMenuOpen]);
+
+  const handleNavClick = useCallback((e, href) => {
     e.preventDefault();
     setIsMobileMenuOpen(false);
     const target = document.querySelector(href);
     if (target) {
       target.scrollIntoView({ behavior: "smooth" });
     }
-  };
+  }, []);
 
   return (
     <header
@@ -31,13 +47,13 @@ export default function Header() {
         isScrolled ? "bg-background/95 backdrop-blur-sm border-b border-border-subtle" : "bg-transparent"
       }`}
     >
-      <nav className="section-padding flex items-center justify-between h-16 md:h-20">
+      <nav className="section-padding flex items-center justify-between h-14 sm:h-16 md:h-20">
         <a
           href="/"
           className="flex items-center gap-3"
           aria-label={company.name}
         >
-          <img src={logo} alt={company.name} className="h-11 md:h-14 w-auto" />
+          <img src={logo} alt={company.name} className="h-10 sm:h-11 md:h-14 w-auto" />
         </a>
 
         {/* Desktop Navigation */}
@@ -57,7 +73,7 @@ export default function Header() {
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden p-2 -mr-2"
+          className="md:hidden p-3 -mr-3 min-w-[44px] min-h-[44px] flex items-center justify-center"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label={isMobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
           aria-expanded={isMobileMenuOpen}
@@ -69,27 +85,37 @@ export default function Header() {
       {/* Mobile Navigation */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden bg-background border-b border-border-subtle overflow-hidden"
-          >
-            <ul className="section-padding py-6 flex flex-col gap-4">
-              {navigation.map((item) => (
-                <li key={item.href}>
-                  <a
-                    href={item.href}
-                    onClick={(e) => handleNavClick(e, item.href)}
-                    className="block text-lg text-foreground hover:text-foreground-muted transition-colors"
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/20 z-40 md:hidden"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="md:hidden bg-background border-b border-border-subtle overflow-hidden relative z-50"
+            >
+              <ul className="section-padding py-6 flex flex-col gap-1">
+                {navigation.map((item) => (
+                  <li key={item.href}>
+                    <a
+                      href={item.href}
+                      onClick={(e) => handleNavClick(e, item.href)}
+                      className="block py-3 text-lg text-foreground hover:text-foreground-muted transition-colors"
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>
